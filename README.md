@@ -15,7 +15,6 @@
   <a href="https://github.com/OneByJorah/VirtOffice/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square" alt="MIT"></a>
   <a href="#"><img src="https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square&logo=python" alt="Python"></a>
   <a href="#"><img src="https://img.shields.io/badge/three.js-r128-ff69b4?style=flat-square&logo=three.js" alt="Three.js"></a>
-  <a href="#"><img src="https://img.shields.io/badge/websockets-yes-8B5CF6?style=flat-square" alt="WebSockets"></a>
   <a href="#"><img src="https://img.shields.io/badge/sse-enabled-10B981?style=flat-square" alt="SSE"></a>
   <a href="#"><img src="https://img.shields.io/badge/docker-ready-2496ED?style=flat-square&logo=docker" alt="Docker"></a>
   <a href="https://jorahone.com"><img src="https://img.shields.io/badge/by-JorahOne-8B5CF6?style=flat-square" alt="JorahOne"></a>
@@ -25,7 +24,7 @@
 
 <p align="center">
   <a href="https://github.com/OneByJorah/VirtOffice">
-    <img src="docs/assets/screenshot.png" alt="VirtOffice preview" width="90%">
+    <img src="docs/screenshots/dashboard.png" alt="VirtOffice preview" width="90%">
   </a>
 </p>
 
@@ -40,7 +39,7 @@ VirtOffice is a real-time 3D virtual workspace that visualizes AI agent fleets. 
 | Feature | Description |
 |---------|-------------|
 | **3D Agent Avatars** | Animated characters with idle breathing, walking cycles, typing arms, and gesturing during meetings |
-| **Real-Time Updates** | WebSocket, SSE (Server-Sent Events), API polling, and webhook push for live agent synchronization |
+| **Real-Time Updates** | SSE (Server-Sent Events), API polling, and webhook push for live agent synchronization |
 | **Interactive UI** | Click-to-inspect agents, camera zoom/rotate, floating chat bubbles, and detailed stats panels |
 | **Rich Office Environment** | Server room (with blinking LEDs), meeting area with whiteboard, kitchen, lounge with TV, phone booths, ping-pong table, bookshelves, and plants |
 | **Multi-Source Data** | Hermes Agent API polling, static `agents.json` file, webhook push, or built-in demo mode |
@@ -53,11 +52,13 @@ VirtOffice is a real-time 3D virtual workspace that visualizes AI agent fleets. 
 git clone https://github.com/OneByJorah/VirtOffice.git
 cd VirtOffice
 
-cp .env.example .env
 python3 server.py
 ```
 
 Open **http://localhost:9502** in your browser.
+
+> `.env` is read by Docker Compose. When running `python3 server.py` directly,
+> pass configuration as environment variables (see table below).
 
 ### Docker
 
@@ -92,11 +93,11 @@ python3 scripts/hermes_bridge.py --api http://localhost:8080
 ## 🏗️ Architecture
 
 ```
-┌─────────────┐   WebSocket / SSE / REST   ┌──────────────┐   ┌─────────────────┐
-│   Browser   │ ◄────────────────────────► │    Python    │ ◄─┤   Hermes API    │
-│  Three.js   │                            │    Server    │   │   agents.json   │
-│  3D Office  │                            │  stdlib HTTP │   │   Webhook Push  │
-└─────────────┘                            └──────────────┘   └─────────────────┘
+┌─────────────┐     SSE / REST poll      ┌──────────────┐   ┌─────────────────┐
+│   Browser   │ ◄──────────────────────► │    Python    │ ◄─┤   Hermes API    │
+│  Three.js   │                          │    Server    │   │   agents.json   │
+│  3D Office  │                          │  stdlib HTTP │   │   Webhook Push  │
+└─────────────┘                          └──────────────┘   └─────────────────┘
                                                  │
                                            ┌─────┴─────┐
                                            │   Demo     │
@@ -110,7 +111,7 @@ python3 scripts/hermes_bridge.py --api http://localhost:8080
 VirtOffice/
 ├── server.py                  # Python stdlib HTTP server (zero dependencies)
 ├── public/
-│   ├── index.html             # Landing page (this page)
+│   ├── index.html             # Landing page
 │   └── office.html            # 3D Three.js office application
 ├── scripts/
 │   ├── hermes_bridge.py       # Hermes AgentOS integration

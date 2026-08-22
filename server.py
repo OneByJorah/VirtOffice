@@ -213,7 +213,7 @@ def _broadcast_sse(payload):
     with sse_lock:
         for q in sse_clients:
             try:
-                q.append(payload)
+                q.put_nowait(payload)
             except Exception:
                 dead.append(q)
         for q in dead:
@@ -353,8 +353,9 @@ def main():
     threading.Thread(target=_polling_loop, daemon=True).start()
 
     os.chdir(DIRECTORY)
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer((HOST, PORT), Handler) as httpd:
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.daemon_threads = True
+    with socketserver.ThreadingTCPServer((HOST, PORT), Handler) as httpd:
         mode = "DEMO" if DEMO_MODE else ("Hermes API" if HERMES_AGENT_API else "agents.json file")
         print(f"🖥  Hermes 3D Office running at http://{HOST}:{PORT}", flush=True)
         print(f"📡 Mode: {mode}", flush=True)

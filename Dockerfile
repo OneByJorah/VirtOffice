@@ -20,6 +20,6 @@ RUN touch agents.json
 EXPOSE 9502
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:${PORT:-9502}/api/config', timeout=5)" || exit 1
+    CMD python3 -c "import os, urllib.request; urllib.request.urlopen('http://localhost:%s/api/config' % os.environ.get('PORT', '9502'), timeout=5)" || exit 1
 
 CMD ["python3", "server.py"]

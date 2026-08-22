@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hermes AgentOS — Living Office Floor Plan</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A2%3C/text%3E%3C/svg%3E">
+<title>VirtOffice — Living Office Floor Plan</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; }
@@ -594,6 +595,12 @@ const STATUS_LABELS = {
   away: 'away',
   walking: 'walking'
 };
+
+function esc(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
 
 const agentStates = {};
 const agentStats = {};
@@ -1620,12 +1627,12 @@ function roundRect(ctx, x, y, width, height, radius) {
 function setupUI() {
   const userBar = document.getElementById('userBar');
   userBar.innerHTML = AGENTS.map(a => `
-    <div class="user-avatar" data-agent="${a.id}">
-      <div class="user-circle" style="background: ${a.color}22; border-color: ${a.color}70">
-        <span class="user-status-ring" style="border-color: ${a.color}"></span>
-        ${a.emoji}
+    <div class="user-avatar" data-agent="${esc(a.id)}">
+      <div class="user-circle" style="background: ${esc(a.color)}22; border-color: ${esc(a.color)}70">
+        <span class="user-status-ring" style="border-color: ${esc(a.color)}"></span>
+        ${esc(a.emoji)}
       </div>
-      <span class="user-name" style="color:${a.color}">${a.name}</span>
+      <span class="user-name" style="color:${esc(a.color)}">${esc(a.name)}</span>
     </div>
   `).join('');
 }
@@ -1688,10 +1695,10 @@ function selectAgent(agentId) {
   document.getElementById('statHours').textContent = (stats.hours || 0) + 'h';
   
   document.getElementById('detailTasks').innerHTML = (agent.tasks || []).map(t => `
-    <div class="detail-task" style="color:${agent.color}">${t}</div>
+    <div class="detail-task" style="color:${esc(agent.color)}">${esc(t)}</div>
   `).join('');
   document.getElementById('detailOutput').innerHTML = (agent.output || []).map(o => `
-    <div class="detail-task">${o}</div>
+    <div class="detail-task">${esc(o)}</div>
   `).join('');
   
   panel.classList.add('open');
@@ -1750,7 +1757,9 @@ function updateBehavior() {
       const home = getHomePosition(agent.home);
       state.targetX = home.x + (Math.random() - 0.5) * 1.2;
       state.targetZ = home.z + (Math.random() - 0.5) * 1.2;
-      state.task = agent.tasks[Math.floor(Math.random() * agent.tasks.length)];
+      state.task = agent.tasks.length
+        ? agent.tasks[Math.floor(Math.random() * agent.tasks.length)]
+        : 'Working';
     } else if (rand < 0.85) {
       state.status = 'walking';
       state.targetX = (Math.random() - 0.5) * (ROOM_WIDTH - 8);

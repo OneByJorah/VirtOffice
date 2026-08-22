@@ -25,6 +25,7 @@ This dashboard consumes a simple JSON contract. Any Hermes installation can feed
 
 Allowed `status` values: `idle`, `walking`, `working`, `meeting`, `away`, `offline`.
 Allowed `home` values: `meeting`, `left`, `center`, `right`, `right2`.
+`position` is accepted for forward compatibility but currently ignored — agents spawn at their `home`.
 
 ## Integration Patterns
 

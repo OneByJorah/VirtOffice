@@ -29,15 +29,21 @@ TASKS = {
 }
 
 
+def _load(path):
+    with path.open() as f:
+        data = json.load(f)
+    if isinstance(data, dict):
+        return data.get("agents", [])
+    return data if isinstance(data, list) else []
+
+
 def load_agents():
     example = Path(__file__).parent.parent / "agents.json.example"
     path = Path(AGENTS_JSON_PATH)
     if path.exists():
-        with path.open() as f:
-            return json.load(f).get("agents", [])
+        return _load(path)
     if example.exists():
-        with example.open() as f:
-            return json.load(f).get("agents", [])
+        return _load(example)
     return []
 
 
