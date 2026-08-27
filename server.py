@@ -357,11 +357,11 @@ def main():
     socketserver.ThreadingTCPServer.daemon_threads = True
     with socketserver.ThreadingTCPServer((HOST, PORT), Handler) as httpd:
         mode = "DEMO" if DEMO_MODE else ("Hermes API" if HERMES_AGENT_API else "agents.json file")
-        print(f"🖥  Hermes 3D Office running at http://{HOST}:{PORT}", flush=True)
-        print(f"📡 Mode: {mode}", flush=True)
-        print(f"📊 Agent API: http://{HOST}:{PORT}/api/agents", flush=True)
-        print(f"🔔 Webhook: POST http://{HOST}:{PORT}/webhook/agents", flush=True)
-        print(f"⚙️  Config: http://{HOST}:{PORT}/api/config", flush=True)
+        print(f"Hermes 3D Office running at http://{HOST}:{PORT}", flush=True)
+        print(f"Mode: {mode}", flush=True)
+        print(f"Agent API: http://{HOST}:{PORT}/api/agents", flush=True)
+        print(f"Webhook: POST http://{HOST}:{PORT}/webhook/agents", flush=True)
+        print(f"Config: http://{HOST}:{PORT}/api/config", flush=True)
         httpd.serve_forever()
 
 
