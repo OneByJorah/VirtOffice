@@ -21,7 +21,7 @@ services:
       - .env
     environment:
       - PORT=${PORT:-9502}
-      - HOST=${HOST:-0.0.0.0}
+      - HOST=${HOST:-<ip-address>}
       - HERMES_AGENT_API=${HERMES_AGENT_API:-}
       - AGENTS_JSON_PATH=${AGENTS_JSON_PATH:-/app/agents.json}
       - POLL_INTERVAL_SECONDS=${POLL_INTERVAL_SECONDS:-5}
