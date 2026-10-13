@@ -1,0 +1,16 @@
+
+# Default owners for OneByJorah repositories
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+*       @OneByJorah
+
+# CI, issue templates, and community files need an owner review
+/.github/              @OneByJorah
+/PULL_REQUEST_TEMPLATE.md  @OneByJorah
+
+# Documentation
+*.md                   @OneByJorah
+
+# Configuration and secrets-like files (review before merge)
+*.env*                 @OneByJorah
+*.yaml                 @OneByJorah
+*.yml                  @OneByJorah

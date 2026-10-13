@@ -1,0 +1,24 @@
+# GitHub linguist + default text handling
+# This file corrects repository language detection and normalizes line endings
+# for text files tracked in git.
+
+# Normalize line endings for text files
+* text=auto eol=lf
+
+# Common non-code / vendored paths that should not count toward language stats
+# (uncomment as needed per repository)
+# *.min.js linguist-vendored
+# node_modules/ linguist-vendored
+# vendor/ linguist-vendored
+# dist/ linguist-vendored
+# build/ linguist-vendored
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg text eol=lf
+*.ico binary
+*.pdf binary
