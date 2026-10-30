@@ -16,7 +16,7 @@ services:
     image: ghcr.io/onebyjorah/offivo:latest
     container_name: offivo
     ports:
-      - "${PORT:-9502}:${PORT:-9502}"
+      - "127.0.0.1:${PORT:-9502}:${PORT:-9502}"
     env_file:
       - .env
     environment:

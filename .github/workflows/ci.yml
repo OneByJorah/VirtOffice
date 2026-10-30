@@ -5,6 +5,9 @@ on:
     branches: [main, master]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
@@ -19,13 +22,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff pytest
+          python -m pip install -r requirements-dev.txt
 
       - name: Lint
-        run: ruff check server.py || true
+        run: python -m ruff check server.py tests
 
       - name: Test
-        run: pytest || true
+        run: python -m pytest -q
 
       - name: Smoke import
         run: python -c "import server; print('import ok')"

@@ -1,10 +1,10 @@
 {
   "name": "offivo",
   "version": "1.0.0",
-  "description": "Virtual office platform \u2014 shared workspaces, video rooms, team chat, and collaborative document editing with Docker deployment.",
-  "main": "index.js",
+  "description": "3D agent dashboard with a Python server, JSON state API, and Server-Sent Events.",
   "scripts": {
-    "test": "echo 'ok' && exit 0"
+    "start": "python server.py",
+    "test": "python -m pytest -q"
   },
   "keywords": [
     "offivo",
@@ -22,12 +22,13 @@
     "url": "https://github.com/OneByJorah/offivo/issues"
   },
   "homepage": "https://github.com/OneByJorah/offivo#readme",
-  "files": [
-    "dist/",
-    "README.md",
-    "LICENSE"
-  ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "files": [
+    "server.py",
+    "public/",
+    "README.md",
+    "LICENSE"
+  ]
 }

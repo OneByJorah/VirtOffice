@@ -3,7 +3,7 @@
 Hermes 3D Office Dashboard Server
 
 Serves the static 3D office dashboard and provides a live agent-state API.
-Three wiring modes are supported out of the box:
+Four wiring modes are supported out of the box:
 
 1. Demo mode            - Auto-generated sample agents (default).
 2. Hermes status API    - Poll HERMES_AGENT_API for live agents.
@@ -12,7 +12,7 @@ Three wiring modes are supported out of the box:
 
 Environment variables (see .env.example):
     PORT                  Server port (default 9502)
-    HOST                  Bind address (default 0.0.0.0)
+    HOST                  Bind address (default 127.0.0.1)
     HERMES_AGENT_API      URL to Hermes GET /api/agents/status endpoint
     AGENTS_JSON_PATH      Path to agents.json file drop
     POLL_INTERVAL_SECONDS Polling interval for HERMES_AGENT_API
@@ -38,7 +38,7 @@ HERMES_AGENT_API = os.environ.get("HERMES_AGENT_API", "").strip()
 AGENTS_JSON_PATH = os.environ.get("AGENTS_JSON_PATH", "").strip() or str(Path(__file__).parent / "agents.json")
 POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL_SECONDS", "5"))
 ENABLE_SSE = os.environ.get("ENABLE_SSE", "true").lower() in ("1", "true", "yes")
-DEMO_MODE = not (HERMES_AGENT_API or AGENTS_JSON_PATH)
+DEMO_MODE = not (HERMES_AGENT_API or Path(AGENTS_JSON_PATH).exists())
 
 DIRECTORY = Path(__file__).parent / "public"
 ROOT = Path(__file__).parent
@@ -136,7 +136,7 @@ def _read_agents_json():
         if path.exists():
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
-                if isinstance(data, list) and data:
+                if isinstance(data, list):
                     return data
                 if isinstance(data, dict) and "agents" in data:
                     return data["agents"]
@@ -286,11 +286,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return
 
     def do_POST(self):
+        global latest_agents
         parsed = urlparse(self.path)
         if parsed.path == "/webhook/agents":
             try:
                 body = self._read_json_body()
-                agents = body.get("agents", body if isinstance(body, list) else [])
+                agents = body if isinstance(body, list) else body.get("agents", [])
                 normalized = [_normalize_agent(a) for a in agents]
                 with state_lock:
                     latest_agents = normalized
@@ -356,12 +357,13 @@ def main():
     socketserver.ThreadingTCPServer.allow_reuse_address = True
     socketserver.ThreadingTCPServer.daemon_threads = True
     with socketserver.ThreadingTCPServer((HOST, PORT), Handler) as httpd:
+        port = httpd.server_address[1]
         mode = "DEMO" if DEMO_MODE else ("Hermes API" if HERMES_AGENT_API else "agents.json file")
-        print(f"Hermes 3D Office running at http://{HOST}:{PORT}", flush=True)
+        print(f"Hermes 3D Office running at http://{HOST}:{port}", flush=True)
         print(f"Mode: {mode}", flush=True)
-        print(f"Agent API: http://{HOST}:{PORT}/api/agents", flush=True)
-        print(f"Webhook: POST http://{HOST}:{PORT}/webhook/agents", flush=True)
-        print(f"Config: http://{HOST}:{PORT}/api/config", flush=True)
+        print(f"Agent API: http://{HOST}:{port}/api/agents", flush=True)
+        print(f"Webhook: POST http://{HOST}:{port}/webhook/agents", flush=True)
+        print(f"Config: http://{HOST}:{port}/api/config", flush=True)
         httpd.serve_forever()
 
 
